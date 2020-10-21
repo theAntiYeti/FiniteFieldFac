@@ -1,4 +1,4 @@
-from Fields import Finite_Field as FF
+from Fields import FiniteField as FF
 import unittest
 
 class Test_Fields(unittest.TestCase):

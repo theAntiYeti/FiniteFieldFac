@@ -1,4 +1,4 @@
-class Finite_Field:
+class FiniteField:
     def __init__(self,p,pivot=None):
         self.pivot = [0,1]
         if pivot:
@@ -7,26 +7,26 @@ class Finite_Field:
         self.p = p # The Characteristic
 
     def reduce_poly(self, f):   
-        q, r = Finite_Field.div_mod(f, self.pivot)
+        q, r = FiniteField.div_mod(f, self.pivot)
 
         for i in range(len(r)):
             r[i] = r[i] % self.p 
-        return Finite_Field.prune(r)
+        return FiniteField.prune(r)
 
     @staticmethod
     def div_mod(f, g):
         """Division of monic f by monic g in Z[x]."""
         assert (g[-1] == 1), "Divisor must be monic."
 
-        k = Finite_Field.deg(f) - Finite_Field.deg(g)
+        k = FiniteField.deg(f) - FiniteField.deg(g)
         if k < 0:
             return [], f # [] indicates the 0 polynomial.
         
         a = f[-1]
-        f_red = Finite_Field._add(f,[0 for i in range(k)]+g,-a)
-        q, r = Finite_Field.div_mod(f_red, g)
+        f_red = FiniteField._add(f,[0 for i in range(k)]+g,-a)
+        q, r = FiniteField.div_mod(f_red, g)
 
-        return Finite_Field._add(Finite_Field._xn(k,a),q,1) , r
+        return FiniteField._add(FiniteField._xn(k,a),q,1) , r
 
 
 
@@ -37,15 +37,15 @@ class Finite_Field:
     @staticmethod
     def _add(f,g,a):
         """Add a*g to f in Z[x]."""
-        n = max(Finite_Field.deg(f), Finite_Field.deg(g))
+        n = max(FiniteField.deg(f), FiniteField.deg(g))
         fin = [0 for i in range(n+1)]
 
         for i in range(n+1):
-            if i <= Finite_Field.deg(f):
+            if i <= FiniteField.deg(f):
                 fin[i] += f[i]
-            if i <= Finite_Field.deg(g):
+            if i <= FiniteField.deg(g):
                 fin[i] += a * g[i]
-        return Finite_Field.prune(fin)
+        return FiniteField.prune(fin)
 
     @staticmethod
     def _xn(n,a):
