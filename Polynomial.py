@@ -50,7 +50,7 @@ class Polynomial:
     @staticmethod
     def add(poly1, poly2):
         if poly1.p != poly2.p:
-            raise TypeError("Must be over same finite field")
+            raise ValueError("Must be over same finite field")
 
         deg = max(poly1.degree,poly2.degree)
         coef = [0 for i in range(deg+1)]
@@ -66,7 +66,7 @@ class Polynomial:
     @staticmethod
     def mult(poly1, poly2):
         if poly1.p != poly2.p:
-            raise TypeError("Must be over same finite field")
+            raise ValueError("Must be over same finite field")
 
         deg = poly1.degree * poly2.degree
         coef = [0 for i in range(deg + 1)]
@@ -88,7 +88,7 @@ class Polynomial:
     @staticmethod
     def div_mod(f, g):
         if f.p != g.p:
-            raise TypeError("Must be over same finite field")
+            raise ValueError("Must be over same finite field")
 
         if f.degree < g.degree:
             return (Polynomial([0],f.p), f)

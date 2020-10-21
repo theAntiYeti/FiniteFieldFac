@@ -22,14 +22,14 @@ class Test_Polynomial(unittest.TestCase):
         f = Polynomial([1,22,3,34,5],17)
         g = Polynomial([2,3,0,0,12],17)
         self.assertEqual(Polynomial.add(f,g), Polynomial([3,25,3,34,0],17))
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             Polynomial.add(f,Polynomial([1],2))
 
     def test_mult(self):
         f = Polynomial([1,22,3,34,5],17)
         g = Polynomial([2,3,0,0,12],17)
         self.assertEqual(Polynomial.mult(f,g), Polynomial([2,47,72,77,124,279,36,408,60],17))
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             Polynomial.mult(f,Polynomial([1],2))
 
 
