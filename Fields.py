@@ -23,7 +23,7 @@ class FiniteField:
             return [], f # [] indicates the 0 polynomial.
         
         a = f[-1]
-        f_red = FiniteField._add(f,[0 for i in range(k)]+g,-a)
+        f_red = FiniteField._add(f,[0]*k +g,-a)
         q, r = FiniteField.div_mod(f_red, g)
 
         return FiniteField._add(FiniteField._xn(k,a),q,1) , r
@@ -50,10 +50,9 @@ class FiniteField:
     @staticmethod
     def _xn(n,a):
         """Returns the polynomial x^n."""
-        p = [0 for i in range(n+1)]
-        if (n > -1):
-            p[-1] = a
-        return p
+        if n < 0:
+            return []
+        return [0]*n + [a]
     
     @staticmethod
     def prune(f):
