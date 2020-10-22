@@ -7,11 +7,29 @@ class FiniteField:
         self.p = p # The Characteristic
 
     def reduce_poly(self, f):   
+        """Returns the Fp[x]/<pivot> representative of the polynomial."""
         q, r = FiniteField.div_mod(f, self.pivot)
 
         for i in range(len(r)):
             r[i] = r[i] % self.p 
         return FiniteField.prune(r)
+
+    def add(self,f,g):
+        """Adds two elements in Fp^n and returns the canonical representative mod pivot."""
+        return self.reduce_poly(FiniteField._add(f,g,1))
+        
+    def mult(self,f,g):
+        """Multiplies two elements in Fp^n and returns the canonical representative mod pivot."""
+        if FiniteField.deg(f) == -1 or FiniteField.deg(g) == -1:
+            return []
+
+        n = FiniteField.deg(f) + FiniteField.deg(g)
+        ret = [0] * (n + 1)
+        for i in range(len(f)):
+            for j in range(len(g)):
+                ret[i+j] += f[i] * g[j]
+        
+        return self.reduce_poly(ret)
 
     @staticmethod
     def div_mod(f, g):
@@ -38,7 +56,7 @@ class FiniteField:
     def _add(f,g,a):
         """Add a*g to f in Z[x]."""
         n = max(FiniteField.deg(f), FiniteField.deg(g))
-        fin = [0 for i in range(n+1)]
+        fin = [0] * (n+1)
 
         for i in range(n+1):
             if i <= FiniteField.deg(f):
@@ -61,3 +79,4 @@ class FiniteField:
         while n >= 0 and f[n] == 0:
             n -= 1
         return f[0:n+1]
+

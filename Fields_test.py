@@ -20,7 +20,7 @@ class Test_Fields(unittest.TestCase):
         self.assertEqual([1,2,3], FF.prune([1,2,3]))
         self.assertEqual([1,2,3,0,1], FF.prune([1,2,3,0,1,0,0]))
 
-    def test_add(self):
+    def test_auxilliary_add(self):
         self.assertEqual(FF._add([1,2,3],[],1), [1,2,3])
         self.assertEqual(FF._add([1,2,3], [1,2,3], -1), [])
         self.assertEqual(FF._add([1,2,3], [1,2,3], 2), [3,6,9])
@@ -39,6 +39,20 @@ class Test_Fields(unittest.TestCase):
 
         fp27 = FF(3, pivot=[-1,-1,0,1]) 
         self.assertEqual(fp27.reduce_poly([0,0,0,0,1]), [0,1,1])
+
+    def test_element_add(self):
+        fp27 = FF(3, pivot=[-1,-1,0,1])
+        self.assertEqual(fp27.add([1],[1]), [2])
+        self.assertEqual(fp27.add([1],[2]), [])
+        self.assertEqual(fp27.add([1,1],[0,1,2]), [1,2,2])
+
+    def test_mult(self):
+        fp27 = FF(3, pivot=[-1,-1,0,1])
+        self.assertEqual(fp27.mult([],[1,2,3]), [])
+        self.assertEqual(fp27.mult([1,2,3],[]), [])
+        self.assertEqual(fp27.mult([2],[0,2,1]), [0,1,2])
+        self.assertEqual(fp27.mult([1,1],[1,1]), [1,2,1])
+
 
 if __name__ == "__main__":
     unittest.main()
