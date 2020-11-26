@@ -31,6 +31,38 @@ class FiniteField:
         
         return self.reduce_poly(ret)
 
+    def inv(self,f):
+        """Takes an element and returns its inverse in Fp[x]/<pivot>."""
+        a, _ = self.bezout(f, self.pivot)
+        return a
+
+    def bezout(self, f, g):
+        """Perform Bezout in Fp[X], returns a,b s.t af + bg = 1.
+           Only works if f, g coprime (guaranteed by inputs)."""
+        a = g[-1] # Leading coefficient of g
+        a_inv = self.inverse_f_p(a) 
+        g_monic = [(a_inv * c) % self.p for c in g] # g = a * g_monic. This operation is fine because of Fp invertability.
+
+        q_1, r = self.div_mod(f, g_monic)
+        r = self.reduce_poly(r)
+        
+        q = [-(a_inv * c) % self.p for c in q_1] # f + q*g = r
+
+        if r == [1]:
+            return ([1], q)
+        
+        x, y = self.bezout(g, r) # xg + yr = 1
+        q_ = self.mult(y,q)
+        new_y = self.prune([x % self.p for x in self._add(x, q_, 1)])
+        return (y, new_y)
+  
+    def inverse_f_p(self, a):
+        """Takes an element a in Fp and returns it's inverse"""
+        if a % self.p == 0:
+            raise ValueError("Division by zero in F", self.pivot)
+
+        return (a**(self.p-2)) % self.p
+
     @staticmethod
     def div_mod(f, g):
         """Division of monic f by monic g in Z[x]."""
