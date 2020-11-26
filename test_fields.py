@@ -1,6 +1,14 @@
 from Fields import FiniteField as FF
 import unittest
 
+
+##########
+#
+# TODO:
+# seperate out these bulky tests into multiple different tests
+# write more tests (duh)
+#
+#########
 class Test_Fields(unittest.TestCase):
     def test_xn(self):
         """Test the function taking n |-> x^n"""
