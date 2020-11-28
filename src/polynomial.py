@@ -30,6 +30,7 @@ class Polynomial:
         return output
 
     def mult(self, f, g):
+        """Takes f and g and returns the product fg."""
         if self.deg(f) == -1 or self.deg(g) == -1:
             return []
         n = self.deg(f) + self.deg(g)
@@ -49,6 +50,20 @@ class Polynomial:
 
         return ret
 
+    def div_mod(self, f, g):
+        """Given polynomials f, g, returns (q,r) s.t f = q*g + r."""
+        k = self.deg(f) - self.deg(g)
+        if k < 0:
+            return []
+        
+        a = f[-1]; b = self.field.inv(g[-1])
+        c = self.field.mult([-1],self.field.mult(a,b))
+
+        g_2 = ([[]]*k) + list(map(lambda x: self.field.mult(x, c), g))
+        r = self.prune([self.field.add(f[i], g_2[i]) for i in range(len(f))])
+        
+        return ([[]] * k) + [self.field.mult(a,b)], r
+
     @staticmethod
     def deg(p):
         return len(p) - 1
@@ -60,10 +75,9 @@ class Polynomial:
             return []
         return [0]*n + [a]
 
-    @staticmethod
-    def prune(f):
+    def prune(self, f):
         """Takes a polynomial with leading 0s and removes them."""
         n = len(f) - 1
-        while n >= 0 and f[n] == 0:
+        while n >= 0 and f[n] == self.field.zero():
             n -= 1
         return f[0:n+1]

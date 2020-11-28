@@ -31,5 +31,14 @@ class TestPoly(unittest.TestCase):
         f = [field.uni(1) for i in range(11)]
         self.assertEqual(polyring.derivative(f), [field.uni(i+1) for i in range(10)])
 
+    def test_div_mod(self):
+        field = FF(p=3)
+        polyring = Poly(field=field)
+
+        f = [[0],[1]]
+        g = [[],[],[2]]
+
+        self.assertEqual(polyring.div_mod(g,f), ([[],[2]],[]))
+
 if __name__=="__main__":
     unittest.main()
