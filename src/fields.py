@@ -6,6 +6,10 @@ class FiniteField:
         assert(self.pivot) 
         self.p = p # The Characteristic
 
+    def uni(self, i):
+        """Image of the universal morphism Z->k. I.E 'What is i in k'."""
+        return self.reduce_poly([i])
+        
     def reduce_poly(self, f):   
         """Returns the Fp[x]/<pivot> representative of the polynomial."""
         q, r = FiniteField.div_mod(f, self.pivot)

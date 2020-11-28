@@ -41,6 +41,14 @@ class Polynomial:
 
         return ret
     
+    def derivative(self, f):
+        """Computes the formal derivative of f."""
+        ret = [0] * self.deg(f)
+        for i in range(1,self.deg(f)+1):
+            ret[i-1] = self.field.mult(f[i], self.field.uni(i))
+
+        return ret
+
     @staticmethod
     def deg(p):
         return len(p) - 1
