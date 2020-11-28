@@ -54,7 +54,7 @@ class Polynomial:
         """Given polynomials f, g, returns (q,r) s.t f = q*g + r."""
         k = self.deg(f) - self.deg(g)
         if k < 0:
-            return []
+            return ([], f)
         
         a = f[-1]; b = self.field.inv(g[-1])
         c = self.field.mult([-1],self.field.mult(a,b))
@@ -63,6 +63,13 @@ class Polynomial:
         r = self.prune([self.field.add(f[i], g_2[i]) for i in range(len(f))])
         
         return ([[]] * k) + [self.field.mult(a,b)], r
+
+    def gcd(self, f, g):
+        if g == self.field.zero():
+            return f
+        _, r = self.div_mod(f,g)
+
+        return self.gcd(g, r)
 
     @staticmethod
     def deg(p):

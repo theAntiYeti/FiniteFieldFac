@@ -40,5 +40,14 @@ class TestPoly(unittest.TestCase):
 
         self.assertEqual(polyring.div_mod(g,f), ([[],[2]],[]))
 
+    def test_gcd(self):
+        field = FF(p=3)
+        polyring = Poly(field=field)
+
+        f = [[0],[1]]
+        g = [[],[],[2]]
+
+        self.assertEqual(polyring.gcd(f,g), f)
+
 if __name__=="__main__":
     unittest.main()
