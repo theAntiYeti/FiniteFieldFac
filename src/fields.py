@@ -77,10 +77,16 @@ class FiniteField:
 
         head = ""
         if f_red[-1] != 1:
-            head == str(f_red[-1])
+            head = str(f_red[-1])
 
         tailstr = self.display(f_red[0:-1], var=var)
 
+        if self.deg(f_red) == 1:
+            if tailstr != "0":
+                return "{h}{v}+{t}".format(h=head,v=var,t=tailstr)
+            else:
+                return "{h}{v}".format(h=head,v=var)
+                
         if tailstr != "0":
             return "{h}{v}^{d}+{t}".format(h=head,v=var,d=self.deg(f_red),t=tailstr)
         else:
@@ -140,6 +146,11 @@ class FiniteField:
     def zero():
         """For compliance with the interfact of polynomial."""
         return []
+
+    @staticmethod
+    def is_base(f):
+        """See if f is an element of Fp."""
+        return len(f) == 1
 
 if __name__=="__main__":
     # For testing cosmetic functions.

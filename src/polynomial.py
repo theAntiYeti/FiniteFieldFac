@@ -71,6 +71,36 @@ class Polynomial:
 
         return self.gcd(g, r)
 
+    def display(self, f, var='x'):
+        if len(f) == 0:
+            return "0"
+        if len(f) == 1:
+            return self.__display_elem(f[0])
+        
+        head = ""
+        if self.field.reduce_poly(f[-1]) != self.field.uni(1):
+            head = self.__display_elem(f[-1])
+
+        tailstr = self.display(self.prune(f[0:-1]), var=var)
+
+        if self.deg(f) == 1:
+            if tailstr != "0":
+                return "{h}{v} + {t}".format(h=head,v=var,t=tailstr)
+            else:
+                return "{h}{v}".format(h=head,v=var)
+
+        if tailstr != "0":
+            return "{h}{v}^{d} + {t}".format(h=head,v=var,d=self.deg(f),t=tailstr)
+        else:
+            return "{h}{v}^{d}".format(h=head,v=var,d=self.deg(f))
+            
+
+    def __display_elem(self, e):
+        if self.field.is_base(e):
+            return self.field.display(e)
+        else:
+            return "({d})".format(d=self.field.display(e))
+
     @staticmethod
     def deg(p):
         return len(p) - 1
@@ -88,3 +118,11 @@ class Polynomial:
         while n >= 0 and f[n] == self.field.zero():
             n -= 1
         return f[0:n+1]
+
+
+import fields
+
+if __name__ == "__main__":
+    field = fields.FiniteField(p=3, pivot=[-1,-1,0,1])
+    polyring = Polynomial(field=field)
+    print(polyring.display([[1,2] , [1,1,1], [], [7]]))
