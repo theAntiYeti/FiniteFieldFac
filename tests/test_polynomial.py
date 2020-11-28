@@ -14,6 +14,15 @@ class TestPoly(unittest.TestCase):
         g = [[],[],[2]]
 
         self.assertEqual(polyring.add(f,g), [[],[1],[2]])
+    
+    def test_mult(self):
+        field = FF(p=5)
+        polyring = Poly(field=field)
+
+        f = [[0],[1]]
+        g = [[],[],[2]]
+
+        self.assertEqual(polyring.mult(f,g), [[],[],[],[2]])
 
 if __name__=="__main__":
     unittest.main()

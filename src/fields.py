@@ -131,6 +131,11 @@ class FiniteField:
         while n >= 0 and f[n] == 0:
             n -= 1
         return f[0:n+1]
+    
+    @staticmethod
+    def zero():
+        """For compliance with the interfact of polynomial."""
+        return []
 
 if __name__=="__main__":
     # For testing cosmetic functions.

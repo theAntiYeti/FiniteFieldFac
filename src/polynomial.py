@@ -1,12 +1,13 @@
 class Polynomial:
     """
     A class for representing the polynomial ring over a given (finite) field and interpreting
-    arrays of (arrays) as polynomials.
+    lists of field elements as polynomials.
     """
     def __init__(self, field):
         self.field = field
 
     def add(self, f, g):
+        """Takes polynomials f, g as lists and returns the list representing f+g."""
         n = len(f)
         m = len(g)
 
@@ -25,9 +26,20 @@ class Polynomial:
             output[i] = self.field.add(big[i],small[i])
         for i in range(n,m):
             output[i] = big[i]
-            
+
         return output
 
+    def mult(self, f, g):
+        if self.deg(f) == -1 or self.deg(g) == -1:
+            return []
+        n = self.deg(f) + self.deg(g)
+        ret = [self.field.zero()] * (n+1)
+        
+        for i in range(len(f)):
+            for j in range(len(g)):
+                ret[i + j] = self.field.add(ret[i + j], self.field.mult(f[i],g[j]))
+
+        return ret
     
     @staticmethod
     def deg(p):
