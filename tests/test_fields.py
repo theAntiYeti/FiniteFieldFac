@@ -83,5 +83,15 @@ class Test_Fields(unittest.TestCase):
         g = fp16.inv(f)
         self.assertEqual(fp16.mult(f,g), [1])
 
+    def test_frobenius(self):
+        fp27 = FF(3, pivot=[-1,-1,0,1])
+        for i in range(3):
+            for j in range(3):
+                for k in range(3):
+                    f = [i,j,k]
+                    f3 = fp27.mult(f,fp27.mult(f,f))
+                    self.assertEqual(f3, fp27.frobenius(f))
+
+
 if __name__ == "__main__":
     unittest.main()

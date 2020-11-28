@@ -67,6 +67,17 @@ class FiniteField:
 
         return (a**(self.p-2)) % self.p
 
+    def frobenius(self, f):
+        """Computes f^p."""
+        d = self.deg(f)*self.p
+        power_poly = [0] * (d+1)
+
+        for i in range(len(f)):
+            power_poly[self.p*i] = f[i]
+        # power_poly now represents f^p in k[X]/<pivot>
+
+        return self.reduce_poly(power_poly)
+
     def display(self, f, var='t'):
         """Returnsthe representative of Fp[x]/<pivot> as a string."""
         f_red = self.reduce_poly(f)

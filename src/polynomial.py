@@ -60,9 +60,11 @@ class Polynomial:
         c = self.field.mult([-1],self.field.mult(a,b))
 
         g_2 = ([[]]*k) + list(map(lambda x: self.field.mult(x, c), g))
-        r = self.prune([self.field.add(f[i], g_2[i]) for i in range(len(f))])
+        f_red = self.prune([self.field.add(f[i], g_2[i]) for i in range(len(f))])
         
-        return ([[]] * k) + [self.field.mult(a,b)], r
+        q, r = self.div_mod(f_red, g)
+
+        return self.add(([[]] * k) + [self.field.mult(a,b)], q), r
 
     def gcd(self, f, g):
         if g == self.field.zero():
