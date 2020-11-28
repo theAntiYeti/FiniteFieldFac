@@ -1,0 +1,4 @@
+#ignore system folders
+.vscode
+__pycache__
+.DS_Store
