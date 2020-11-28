@@ -63,6 +63,26 @@ class FiniteField:
 
         return (a**(self.p-2)) % self.p
 
+    def display(self, f, var='t'):
+        """Returnsthe representative of Fp[x]/<pivot> as a string."""
+        f_red = self.reduce_poly(f)
+        if len(f_red) == 0:
+            return "0"
+        if len(f_red) == 1:
+            return str(f_red[0])
+
+        head = ""
+        if f_red[-1] != 1:
+            head == str(f_red[-1])
+
+        tailstr = self.display(f_red[0:-1], var=var)
+
+        if tailstr != "0":
+            return "{h}{v}^{d}+{t}".format(h=head,v=var,d=self.deg(f_red),t=tailstr)
+        else:
+            return "{h}{v}^{d}".format(h=head,v=var,d=self.deg(f_red))
+        
+
     @staticmethod
     def div_mod(f, g):
         """Division of monic f by monic g in Z[x]."""
@@ -112,3 +132,9 @@ class FiniteField:
             n -= 1
         return f[0:n+1]
 
+if __name__=="__main__":
+    # For testing cosmetic functions.
+    fp27 = FiniteField(3, pivot=[-1,-1,0,1]) 
+    print(fp27.display([]))
+    print(fp27.display([1,1,1]))
+    print(fp27.display([1,0,1]))
