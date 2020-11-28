@@ -1,4 +1,7 @@
-from Fields import FiniteField as FF
+import os
+import sys
+sys.path.insert(0, os.getcwd()+'/src') # To access /src file to import FF.
+from fields import FiniteField as FF
 import unittest
 
 
