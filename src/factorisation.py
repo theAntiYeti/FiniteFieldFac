@@ -93,22 +93,16 @@ def equal_degree_factorisation(f, d, poly):
 
 if __name__ == "__main__":
 
-    fp   = fields.FiniteField(3, pivot=[1,0,1])
+    fp   = fields.FiniteField(3, pivot=[-1,-1,0,1])
     poly = polynomial.Polynomial(fp)
 
-    n = 9
-    cyclo = [[]]*(n+1)
-    cyclo[n] = [1]
-    cyclo[1] = [-1]
-    print(poly.display(cyclo))
-
+    f = [[1],[1],[],[],[],[1]]
+    print(poly.display(f))
     #f = list(map(lambda x: [x],[1,0,2,2,0,1,1,0,2,2,0,1]))
     str = ""
 
-    for e, i in square_free_factorisation(cyclo, poly):
+    for e, i in square_free_factorisation(f, poly):
         for g, d in distinct_degree_factorisation(e, poly):
             for h in equal_degree_factorisation(g, d, poly):
                 str += "({f})^{n}".format(f=poly.display(h),n=i)
     print("f="+str)
-
-    k = poly.gcd([[1],[],[],[1]], [[],[2],[],[1]])

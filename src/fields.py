@@ -9,7 +9,7 @@ class FiniteField:
         self.p = p # The Characteristic
 
     def order(self):
-        return self.deg(self.pivot) * self.p
+        return self.p ** self.deg(self.pivot)
 
     def uni(self, i):
         """Image of the universal morphism Z->k. I.E 'What is i in k'."""
