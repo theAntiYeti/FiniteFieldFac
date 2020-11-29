@@ -92,6 +92,11 @@ class Polynomial:
 
         return g
 
+    def sample_poly(self, d):
+        """Returns a random monic polynomial of degree d."""
+        ret = [self.field.sample() for _ in range(d)]
+        ret += [self.field.uni(1)]
+        return ret
 
     def display(self, f, var='x'):
         if len(f) == 0:
@@ -121,7 +126,7 @@ class Polynomial:
         if self.field.is_base(e):
             return self.field.display(e)
         else:
-            return "({d})".format(d=self.field.display(e))
+            return "[{d}]".format(d=self.field.display(e))
 
     @staticmethod
     def deg(p):
@@ -147,4 +152,5 @@ import fields
 if __name__ == "__main__":
     field = fields.FiniteField(p=3, pivot=[-1,-1,0,1])
     polyring = Polynomial(field=field)
-    print(polyring.display([[1,2] , [1,1,1], [], [7]]))
+    f = polyring.sample_poly(5)
+    print(polyring.display(f))

@@ -1,3 +1,5 @@
+import random
+
 class FiniteField:
     def __init__(self,p,pivot=None):
         self.pivot = [0,1]
@@ -88,6 +90,10 @@ class FiniteField:
             g = self.frobenius(g)
         return g
 
+    def sample(self):
+        r = self.deg(self.pivot)
+        return self.prune([random.randrange(self.p) for _ in range(r)])
+
     def display(self, f, var='t'):
         """Returnsthe representative of Fp[x]/<pivot> as a string."""
         f_red = self.reduce_poly(f)
@@ -171,7 +177,7 @@ class FiniteField:
     @staticmethod
     def is_base(f):
         """See if f is an element of Fp."""
-        return len(f) == 1
+        return (FiniteField.deg(f) == 0)
 
 if __name__=="__main__":
     # For testing cosmetic functions.
