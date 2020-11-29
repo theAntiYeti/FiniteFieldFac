@@ -65,7 +65,10 @@ def equal_degree_factorisation(f, d, poly):
         n = max(list(map(lambda x: poly.deg(x), incomplete)))
 
         h = poly.sample_poly_upto(n)
-        e = ((q**d) - 1) // 2
+        if poly.field.p == 2:
+            e = (q**d) - 1
+        else:
+            e = ((q**d) - 1) // 2
         g = poly.add(poly.exp(h,e), [poly.field.uni(-1)])
 
         new_incomplete = []
@@ -92,7 +95,7 @@ def equal_degree_factorisation(f, d, poly):
     return irr_factors
 
 if __name__ == "__main__":
-
+    """
     fp   = fields.FiniteField(3, pivot=[-1,-1,0,1])
     poly = polynomial.Polynomial(fp)
 
@@ -100,9 +103,21 @@ if __name__ == "__main__":
     print(poly.display(f))
     #f = list(map(lambda x: [x],[1,0,2,2,0,1,1,0,2,2,0,1]))
     str = ""
+    """
+
+    fp = fields.FiniteField(2, pivot=[1,1,0,0,1])
+    poly = polynomial.Polynomial(fp)
+    f = [[]] * 17
+    f[-1] = [1]
+    f[1]  = [1]
+
+    print(poly.display(f))
+    str = ""
 
     for e, i in square_free_factorisation(f, poly):
         for g, d in distinct_degree_factorisation(e, poly):
             for h in equal_degree_factorisation(g, d, poly):
+                print('.', end="")
                 str += "({f})^{n}".format(f=poly.display(h),n=i)
+    print()
     print("f="+str)
