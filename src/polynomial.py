@@ -73,6 +73,26 @@ class Polynomial:
 
         return self.gcd(g, r)
 
+    def monic(self, f):
+        """Makes a polynomial monic. Necessary because the algorithms have trouble guaranteeing monicity."""
+        if len(f) == 0:
+            return f
+        a = self.field.inv(f[-1])
+        return self.mult(f, [a])
+
+    def pth_root(self, f):
+        """find g s.t g(x^p) = f and apply inverse frobenius to coefficients."""
+        k = self.deg(f)
+        assert(k % self.field.p == 0)
+
+        l = k // self.field.p
+        g = [self.field.zero()]*(l+1)
+        for i in range(l+1):
+            g[i] = self.field.inverse_frobenius(f[i*self.field.p])
+
+        return g
+
+
     def display(self, f, var='x'):
         if len(f) == 0:
             return "0"

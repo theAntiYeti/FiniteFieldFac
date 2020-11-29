@@ -6,6 +6,9 @@ class FiniteField:
         assert(self.pivot) 
         self.p = p # The Characteristic
 
+    def order(self):
+        return self.deg(self.pivot) * self.p
+
     def uni(self, i):
         """Image of the universal morphism Z->k. I.E 'What is i in k'."""
         return self.reduce_poly([i])
@@ -52,8 +55,8 @@ class FiniteField:
         
         q = [-(a_inv * c) % self.p for c in q_1] # f + q*g = r
 
-        if r == [1]:
-            return ([1], q)
+        if len(r) == 1:
+            return ([self.inverse_f_p(r[0])], q)
         
         x, y = self.bezout(g, r) # xg + yr = 1
         q_ = self.mult(y,q)
@@ -77,6 +80,13 @@ class FiniteField:
         # power_poly now represents f^p in k[X]/<pivot>
 
         return self.reduce_poly(power_poly)
+
+    def inverse_frobenius(self, f):
+        e = self.deg(self.pivot)
+        g = f
+        for i in range(e-1):
+            g = self.frobenius(g)
+        return g
 
     def display(self, f, var='t'):
         """Returnsthe representative of Fp[x]/<pivot> as a string."""
