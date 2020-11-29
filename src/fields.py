@@ -27,7 +27,7 @@ class FiniteField:
         """Adds two elements in Fp^n and returns the canonical representative mod pivot."""
         return self.reduce_poly(FiniteField._add(f,g,1))
         
-    def mult(self,f,g):
+    def mult(self,f,g, reduce=True):
         """Multiplies two elements in Fp^n and returns the canonical representative mod pivot."""
         if FiniteField.deg(f) == -1 or FiniteField.deg(g) == -1:
             return []
@@ -37,38 +37,58 @@ class FiniteField:
         for i in range(len(f)):
             for j in range(len(g)):
                 ret[i+j] += f[i] * g[j]
-        
-        return self.reduce_poly(ret)
+
+        if reduce:
+            return self.reduce_poly(ret)
+        else:
+            return self.prune([x % self.p for x in ret])
 
     def inv(self,f):
         """Takes an element and returns its inverse in Fp[x]/<pivot>."""
         a, _ = self.bezout(f, self.pivot)
         return a
 
+    def div_mod_Fp(self, f, g):
+        """Calculates q, r, s.t f = qg+r in Fp[x]"""
+        k = self.deg(f) - self.deg(g)
+        if k < 0:
+            return ([], f)
+        
+        a = g[-1]; b = f[-1]
+        c = (b * self.inverse_f_p(a)) % self.p
+        
+        g_2 = [0]*k + g
+        assert(self.deg(g_2) == self.deg(f))
+
+        f_red = self.prune([x % self.p for x in self._add(f, g_2, -c)])
+        assert(self.deg(f_red) < self.deg(f))
+
+        q, r = self.div_mod_Fp(f_red, g)
+        
+        q_new = [x % self.p for x in self._add(q, self._xn(k, 1), c)]
+
+        return q_new, r
+
+
     def bezout(self, f, g):
         """Perform Bezout in Fp[X], returns a,b s.t af + bg = 1.
            Only works if f, g coprime (guaranteed by inputs)."""
-        a = g[-1] # Leading coefficient of g
-        a_inv = self.inverse_f_p(a) 
-        g_monic = [(a_inv * c) % self.p for c in g] # g = a * g_monic. This operation is fine because of Fp invertability.
-
-        q_1, r = self.div_mod(f, g_monic)
-        r = self.reduce_poly(r)
-        
-        q = [-(a_inv * c) % self.p for c in q_1] # f + q*g = r
+        q, r = self.div_mod_Fp(f, g)
+        q_2  = [(-c) % self.p for c in q]
 
         if len(r) == 1:
-            return ([self.inverse_f_p(r[0])], q)
-        
-        x, y = self.bezout(g, r) # xg + yr = 1
-        q_ = self.mult(y,q)
-        new_y = self.prune([x % self.p for x in self._add(x, q_, 1)])
-        return (y, new_y)
+            rinv = self.inverse_f_p(r[0])
+            return ([self.inverse_f_p(r[0])], [ (rinv * c) % self.p for c in q_2])
+
+        x, y = self.bezout(g, r)
+        yq2 = self.mult(y, q_2, reduce=False)
+        y_new = self.prune([l % self.p for l in self._add(yq2, x, 1)])
+        return (y, y_new)
   
     def inverse_f_p(self, a):
         """Takes an element a in Fp and returns it's inverse"""
         if a % self.p == 0:
-            raise ValueError("Division by zero in F", self.pivot)
+            raise ValueError("Division by zero in F"+str(self.p))
 
         return (a**(self.p-2)) % self.p
 

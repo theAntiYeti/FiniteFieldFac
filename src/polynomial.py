@@ -48,7 +48,7 @@ class Polynomial:
         for i in range(1,self.deg(f)+1):
             ret[i-1] = self.field.mult(f[i], self.field.uni(i))
 
-        return ret
+        return self.prune(ret)
 
     def div_mod(self, f, g):
         """Given polynomials f, g, returns (q,r) s.t f = q*g + r."""
@@ -57,17 +57,21 @@ class Polynomial:
             return ([], f)
         
         a = f[-1]; b = self.field.inv(g[-1])
+        
+        assert(self.field.mult(g[-1], b) == self.field.uni(1))
         c = self.field.mult([-1],self.field.mult(a,b))
 
         g_2 = ([[]]*k) + list(map(lambda x: self.field.mult(x, c), g))
         f_red = self.prune([self.field.add(f[i], g_2[i]) for i in range(len(f))])
-        
+
+        #print(self.display(f_red), '******', self.display(g_2), ' ***** ', self.display(f))
+        assert(self.deg(f_red) < self.deg(f))
         q, r = self.div_mod(f_red, g)
 
         return self.add(([[]] * k) + [self.field.mult(a,b)], q), r
 
     def gcd(self, f, g):
-        if g == self.field.zero():
+        if g == []:
             return f
         _, r = self.div_mod(f,g)
 
@@ -92,11 +96,27 @@ class Polynomial:
 
         return g
 
+    def exp(self, f, n):
+        """Returns f^n"""
+        if n == 0:
+            return [self.field.uni(1)]
+        elif n == 1:
+            return f
+        elif n % 2 == 0:
+            return self.exp(self.mult(f,f), n // 2)
+        else:
+            return self.mult(f, self.exp(self.mult(f,f), (n-1)//2))
+
     def sample_poly(self, d):
         """Returns a random monic polynomial of degree d."""
         ret = [self.field.sample() for _ in range(d)]
         ret += [self.field.uni(1)]
         return ret
+
+    def sample_poly_upto(self, n):
+        """Returns a random polynomial of degree < n."""
+        ret = [self.field.sample() for _ in range(n+1)]
+        return self.prune(ret)
 
     def display(self, f, var='x'):
         if len(f) == 0:
@@ -154,3 +174,4 @@ if __name__ == "__main__":
     polyring = Polynomial(field=field)
     f = polyring.sample_poly(5)
     print(polyring.display(f))
+

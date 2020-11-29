@@ -34,7 +34,6 @@ def distinct_degree_factorisation(f, poly):
         char_poly = [poly.field.uni(0)]*(l+1)
         char_poly[-1] = poly.field.uni(1)
         char_poly[1] = poly.field.uni(-1) # char_poly is x^q^i - x
-
         g = poly.gcd(f_star, char_poly)
 
         if poly.deg(g) != 0:
@@ -50,21 +49,66 @@ def distinct_degree_factorisation(f, poly):
     else:
         return S
 
+def equal_degree_factorisation(f, d, poly):
+    """Factors a polynomial f with factors of equal degree d. Cantor Zassenhaus algorithm."""
+    n = poly.deg(f)
+    r = n // d 
+    q = poly.field.order()
+
+    if r == 1:
+        return [f]
+    
+    irr_factors = []
+    incomplete = [f]
+
+    while r > 0:
+        n = max(list(map(lambda x: poly.deg(x), incomplete)))
+
+        h = poly.sample_poly_upto(n)
+        e = ((q**d) - 1) // 2
+        g = poly.add(poly.exp(h,e), [poly.field.uni(-1)])
+
+        new_incomplete = []
+        for u in incomplete:
+            k = poly.gcd(g,u)
+            if poly.deg(k) != 0 and poly.deg(k) != poly.deg(u):
+                quot, _ = poly.div_mod(u, k)
+
+                if poly.deg(k) == d:
+                    irr_factors.append(poly.monic(k))
+                    r -= 1
+                else:
+                    new_incomplete.append(k)
+
+                if poly.deg(quot) == d:
+                    irr_factors.append(poly.monic(quot))
+                    r -= 1
+                else:
+                    new_incomplete.append(quot)
+            else:
+                new_incomplete.append(u)
+
+        incomplete = [x for x in new_incomplete]
+    return irr_factors
+
 if __name__ == "__main__":
-    fp   = fields.FiniteField(3)
+
+    fp   = fields.FiniteField(3, pivot=[1,0,1])
     poly = polynomial.Polynomial(fp)
 
-    n = 5
+    n = 9
     cyclo = [[]]*(n+1)
     cyclo[n] = [1]
-    cyclo[0] = [-1]
-    #print(poly.display(cyclo))
+    cyclo[1] = [-1]
+    print(poly.display(cyclo))
 
-    f = list(map(lambda x: [x],[1,0,2,2,0,1,1,0,2,2,0,1]))
+    #f = list(map(lambda x: [x],[1,0,2,2,0,1,1,0,2,2,0,1]))
     str = ""
-    for e, i in square_free_factorisation(f, poly):
-        print(distinct_degree_factorisation(e,poly))
-        for g, j in distinct_degree_factorisation(e, poly):
-            str += "({f})^{n}".format(f=poly.display(g),n=i)
-    
-    print("f=",str)
+
+    for e, i in square_free_factorisation(cyclo, poly):
+        for g, d in distinct_degree_factorisation(e, poly):
+            for h in equal_degree_factorisation(g, d, poly):
+                str += "({f})^{n}".format(f=poly.display(h),n=i)
+    print("f="+str)
+
+    k = poly.gcd([[1],[],[],[1]], [[],[2],[],[1]])

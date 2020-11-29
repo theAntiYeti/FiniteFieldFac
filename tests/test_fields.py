@@ -1,8 +1,10 @@
+import unittest
+
+
 import os
 import sys
 sys.path.insert(0, os.getcwd()+'/src') # To access /src file to import FF.
 from fields import FiniteField as FF
-import unittest
 
 
 ##########
@@ -92,6 +94,19 @@ class Test_Fields(unittest.TestCase):
                     f3 = fp27.mult(f,fp27.mult(f,f))
                     self.assertEqual(f3, fp27.frobenius(f))
 
+    def test_inverse_long(self):
+        fp27 = FF(3, pivot=[-1,-1,0,1])
+        for i in range(3):
+            for j in range(3):
+                for k in range(3):
+                    if not(i == 0 and j == 0 and k == 0):
+                        a = fp27.prune([i,j,k])
+                        b = fp27.inv(a)
+                        self.assertEqual(fp27.mult(a,b), [1])
 
+    def test_inverse_short(self):
+        fp7 = FF(53)
+        for i in range(1,7):
+            self.assertEqual(fp7.mult([i], fp7.inv([i])), [1])
 if __name__ == "__main__":
     unittest.main()
