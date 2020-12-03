@@ -10,10 +10,7 @@ from parse_polynomial import parse_unbracketed
 def prime(a):
     return not (a < 2 or any(a % x == 0 for x in range(2, int(a ** 0.5) + 1)))
 
-def lift_el(x):
-    if x == 0:
-        return []
-    return [x]
+
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -28,11 +25,10 @@ class Ui(QtWidgets.QMainWindow):
         p = 1
         to_factor = None
         pivot = None
+
         try:
             str = self.polynomialInput.toPlainText()
-            print(str)
-            print(parse_unbracketed(str))
-            to_factor = list(map(lift_el, parse_unbracketed(str)))
+            to_factor = parse_unbracketed(str)
         except:
             errormsg += "Error, cannot parse polynomial to factor.\n"
 
@@ -48,7 +44,7 @@ class Ui(QtWidgets.QMainWindow):
         
         # Ensure pivot parses correctly.
         try:
-            pivot = parse_unbracketed(self.minPolyEntry.toPlainText())
+            pivot = parse_unbracketed(self.minPolyEntry.toPlainText(), as_integer=True)
         except:
             errormsg += "Error, cannot parse minimal polynomial."
         
