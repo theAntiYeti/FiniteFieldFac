@@ -94,6 +94,25 @@ def equal_degree_factorisation(f, d, poly):
         incomplete = [x for x in new_incomplete]
     return irr_factors
 
+def factorise(f, poly):
+    term_storer = dict()
+
+    for e, i in square_free_factorisation(f, poly):
+        for g, d in distinct_degree_factorisation(e, poly):
+            for h in equal_degree_factorisation(g, d, poly):
+                disp = poly.display(h)
+                if not(disp in term_storer):
+                    term_storer[disp] = i
+                else:
+                    term_storer[disp] += i
+    
+    str = ""
+
+    for t in term_storer.keys():
+        str += "({f})^{n}".format(f=t,n=term_storer[t])
+
+    return str
+
 if __name__ == "__main__":
     """
     fp   = fields.FiniteField(3, pivot=[-1,-1,0,1])
@@ -105,19 +124,11 @@ if __name__ == "__main__":
     str = ""
     """
 
-    fp = fields.FiniteField(2, pivot=[1,1,0,0,1])
+    fp = fields.FiniteField(3)
     poly = polynomial.Polynomial(fp)
-    f = [[]] * 17
-    f[-1] = [1]
-    f[1]  = [1]
+    f = [[],[1],[],[1]]
 
     print(poly.display(f))
-    str = ""
-
-    for e, i in square_free_factorisation(f, poly):
-        for g, d in distinct_degree_factorisation(e, poly):
-            for h in equal_degree_factorisation(g, d, poly):
-                print('.', end="")
-                str += "({f})^{n}".format(f=poly.display(h),n=i)
+    str = factorise(f, poly)
     print()
     print("f="+str)

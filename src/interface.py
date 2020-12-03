@@ -3,7 +3,7 @@ import sys
 
 from fields import FiniteField as FF
 from polynomial import Polynomial as Poly
-import finite_field_factorisation
+from finite_field_factorisation import factorise
 from parse_polynomial import parse_unbracketed
 
 # Replace with literally any primality checking function ever, don't want to go too deep.
@@ -49,17 +49,16 @@ class Ui(QtWidgets.QMainWindow):
             errormsg += "Error, cannot parse minimal polynomial."
         
         # Ensure pivot is irreducible.
-
+        print(pivot)
+        print(to_factor)
+        print(p)
         # ...
 
         if errormsg == "":
             try:
                 field = FF(p, pivot=pivot)
                 polyring = Poly(field)
-                msg = "Poly: {todisp} \np: {pr}\nq: {ord}".format(todisp=polyring.display(to_factor),
-                                                                                pr=p,
-                                                                                ord=field.order()  
-                                                                                    )
+                msg = factorise(to_factor, polyring)
                 self.outputDisplay.setText(msg)
             except:
                 self.outputDisplay.setText("lmao")

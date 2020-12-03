@@ -8,10 +8,13 @@ def lift_el(x):
 
 def process(term):
     # Terms are of the form: nx^d | nx | n | x^d | x
+    if term == 'x':
+        return [1,1]
+
     splt = term.split("x")
 
     if len(splt) == 1:
-        return [int(splt[0]), 1]
+        return [int(splt[0]), 0]
 
     if splt[0] != '' and splt[1] != '':
         return [int(splt[0]), int(splt[1][1:])]
@@ -48,4 +51,6 @@ def parse_unbracketed(f, as_integer=False):
 if __name__ == "__main__":
     #print(parse_unbracketed("x^5 + 4 x ^2", as_integer=True))
     #print(parse_unbracketed('x^2 + x^3 + x^0'))
-    print(parse_unbracketed('x^3 + 2x + 1'))
+    #print(parse_unbracketed('x^3 + 2x + 1'))
+    #print(parse_unbracketed('x', as_integer=True))
+    print(parse_unbracketed('1', as_integer=True))
