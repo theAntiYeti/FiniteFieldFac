@@ -49,10 +49,7 @@ class Ui(QtWidgets.QMainWindow):
             errormsg += "Error, cannot parse minimal polynomial."
         
         # Ensure pivot is irreducible.
-        print(pivot)
-        print(to_factor)
-        print(p)
-        # ...
+
 
         if errormsg == "":
             try:
@@ -61,7 +58,7 @@ class Ui(QtWidgets.QMainWindow):
                 msg = factorise(to_factor, polyring)
                 self.outputDisplay.setText(msg)
             except:
-                self.outputDisplay.setText("lmao")
+                self.outputDisplay.setText("An error occured during factoring, please try again.")
         else:
             self.outputDisplay.setText(errormsg)
         
