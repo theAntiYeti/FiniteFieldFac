@@ -16,11 +16,14 @@ def process(term):
     if len(splt) == 1:
         return [int(splt[0]), 0]
 
-    if splt[0] != '' and splt[1] != '':
+    elif splt[0] != '' and splt[1] != '':
         return [int(splt[0]), int(splt[1][1:])]
 
     elif splt[1] != '':
         return [1, int(splt[1][1:])]
+
+    elif splt[0] != '':
+        return [int(splt[0]), 1]
 
     else:
         return [1,0]
@@ -47,10 +50,3 @@ def parse_unbracketed(f, as_integer=False):
         return out
 
     return list(map(lift_el, out))
-
-if __name__ == "__main__":
-    #print(parse_unbracketed("x^5 + 4 x ^2", as_integer=True))
-    #print(parse_unbracketed('x^2 + x^3 + x^0'))
-    #print(parse_unbracketed('x^3 + 2x + 1'))
-    #print(parse_unbracketed('x', as_integer=True))
-    print(parse_unbracketed('1', as_integer=True))

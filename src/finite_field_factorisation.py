@@ -109,7 +109,10 @@ def factorise(f, poly):
     str = ""
 
     for t in term_storer.keys():
-        str += "({f})^{n}".format(f=t,n=term_storer[t])
+        if term_storer[t] == 1:
+            str += "({f})".format(f=t)
+        else:
+            str += "({f})^{n}".format(f=t,n=term_storer[t])
 
     return str
 
