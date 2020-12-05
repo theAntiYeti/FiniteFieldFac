@@ -18,6 +18,7 @@ src:
 * interface.py is the driver, runs the interface
 * parse_polynomial.py reads strings and returns lists representing polynomials
 * finite_field_factorisation.py contains the main factoring algorithms.
+
 tests contains tests for all of the above.
 
 ## Running
